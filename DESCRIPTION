@@ -1,0 +1,18 @@
+Package: LearnR3
+Title: Analysis Project for LearnR3
+Type: Project
+Version: 0.0.1
+Encoding: UTF-8
+Imports: 
+    dplyr,
+    fs,
+    here,
+    lubridate,
+    purrr,
+    readr,
+    snakecase,
+    stringr
+Depends: 
+    tidyverse
+URL: https://github.com/adamfogarasi-93/LearnR3
+BugReports: https://github.com/adamfogarasi-93/LearnR3/issues

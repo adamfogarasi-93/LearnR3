@@ -1,0 +1,219 @@
+---
+title: "Draft Quarto File"
+author: "Adam"
+format: html
+---
+
+```{r setup}
+library(tidyverse)
+library(here)
+library(snakecase)
+library(fs)
+
+here::i_am("docs/learning.qmd")
+source(here("R/functions.R"))
+```
+
+## for description document 
+```{r}
+usethis::use_package("dplyr")
+usethis::use_package("stringr")
+```
+
+## Importing raw data
+
+```{r}
+here("data-raw/nurses-stress/stress/5C/5C_1586886626/HR.csv.gz") |>
+  readr::read_csv(show_col_types = FALSE)
+```
+
+## Reading data with a function
+
+```{r}
+# Outputs only 100 rows
+here("data-raw/nurses-stress/stress/5C/5C_1586886712/HR.csv.gz") |>
+  read(max_rows = 100)
+
+# Outputs only 1000 rows
+here("data-raw/nurses-stress/stress/5C/5C_1586886712/HR.csv.gz") |>
+  read(max_rows = 1000)
+
+# Outputs all rows
+here("data-raw/nurses-stress/stress/5C/5C_1586886712/HR.csv.gz") |>
+  read(max_rows = Inf)
+```
+
+## Using map
+```{r}
+hr_files <- here("data-raw/nurses-stress/") |>
+  dir_ls(regexp = "HR.csv.gz", recurse = TRUE)
+
+hr_data <- hr_files |>
+  map(read) |>
+  list_rbind(names_to = "file_path_id")
+
+hr_data
+```
+
+##exercise 18.5 
+```{r}
+#| eval: false
+#| include: false
+#' Read all `.csv.gz` files in the `stress/` folder into one data frame.
+#'
+#' @param filename The name of files in the sub-folders that we
+#'    want to read in.
+#'
+#' @returns A single data frame/tibble.
+#'
+read_all <- function(filename) {
+  files <- here::here("data-raw/nurses-stress/") |>
+    fs::dir_ls(regexp = filename, recurse = TRUE)
+
+  data <- files |>
+    purrr::map(read) |>
+    purrr::list_rbind(names_to = "file_path_id")
+
+  return(data)
+}
+
+read_all("HR.csv.gz")
+read_all("IBI.csv.gz")
+```
+```{r}
+read_all("HR.csv.gz")
+read_all("IBI.csv.gz")
+```
+##Inspecting the data
+```{r}
+hr_data <- read_all("HR.csv.gz")
+
+survey_data <- here("data-raw/nurses-stress/survey-results.csv.gz") |>
+  read()
+
+hr_data
+survey_data
+```
+```{r}
+hr_data %>%
+  mutate(
+    id = str_extract(
+      file_path_id,
+      pattern = "/stress/[:alnum:]{2}/"
+    ) %>%
+      str_remove("/stress/") %>%
+      str_remove("/"),
+    .before = file_path_id
+  ) %>%
+  select(-file_path_id)
+```
+##Convert ‘get ID’ code into a function
+```{r}
+get_participant_id <- function(data) {
+  data_with_id <- data %>%
+    dplyr::mutate(
+      id = stringr::str_extract(
+        file_path_id,
+        pattern = "/stress/[:alnum:]{2}/"
+      ) %>%
+        stringr::str_remove("/stress/") %>%
+        stringr::str_remove("/"),
+      .before = file_path_id
+    ) %>%
+    dplyr::select(-file_path_id)
+
+  return(data_with_id)
+}
+```
+# How it will be used.
+```{r}
+get_participant_id(hr_data)
+```
+```{r}
+print(survey_data)
+```
+
+## Working with across 
+```{r}
+hr_data <- read_all("HR.csv.gz") %>%
+  get_participant_id()
+```
+
+## working with across function
+```{r}
+hr_data %>%
+  summarize(across(where(is.numeric), list(
+    standardeviation = sd,
+    mean = mean,
+    median = median,
+    min = min,
+    max = max
+  )))
+```
+```{r}
+hr_data %>%
+  summarize(across(hr, \(x)mean(x, na.rm = TRUE)))
+```
+
+
+## Working with dates
+```{r}
+hr_data %>%
+  mutate(
+    datetime = round_date(collection_datetime, unit = "minute"),
+    .before = "collection_datetime"
+  )
+```
+
+## Summarizing by groups 
+```{r}
+hr_data %>%
+  mutate(
+    collection_datetime = round_date(
+      collection_datetime,
+      unit = "minute"
+    )
+  ) %>%
+  summarize(
+    across(
+      where(is.numeric),
+      list(
+        standardeviation = sd,
+        mean = mean,
+        median = median,
+        min = min,
+        max = max
+      )
+    ),
+    .by = c(id, collection_datetime)
+  )
+```
+
+
+```{r}
+summarize_by_datetime <- function(data) {
+  summarized_data <- data |>
+    # Fill in below with the code we just wrote.
+    mutate(
+    collection_datetime = round_date(
+      collection_datetime,
+      unit = "minute"
+    )
+  ) %>%
+  summarize(
+    across(
+      where(is.numeric),
+      list(
+        standardeviation = sd,
+        mean = mean,
+        median = median,
+        min = min,
+        max = max
+      )
+    ),
+    .by = c(id, collection_datetime)
+  )
+  return(summarise_by_datetime(hr_data))
+}
+```
+
