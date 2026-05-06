@@ -216,4 +216,23 @@ summarize_by_datetime <- function(data) {
   return(summarise_by_datetime(hr_data))
 }
 ```
+## Pivot longer
+
+```{r}
+survey_data <- 
+  here("data-raw/nurses-stress/survey-results.csv.gz") %>% 
+  read()
+survey_data
+```
+
+```{r}
+survey_tidy <- survey_data %>% 
+  mutate(date = mdy(date),
+         start_datetime=as_datetime(paste(date, start_time)),
+         end_datetime = as_datetime(paste(date, end_time)),
+         datetime_id = start_datetime,
+         .before =start_time) %>% 
+select(-c(date,start_time,end_time,duration))
+```
+
 
