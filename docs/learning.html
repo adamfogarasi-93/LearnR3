@@ -753,6 +753,250 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <span id="cb61-2"><a href="#cb61-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">tidy_survey_dates</span>() <span class="sc">%&gt;%</span> </span>
 <span id="cb61-3"><a href="#cb61-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">survey_to_long</span>() </span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb62"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb62-1"><a href="#cb62-1" aria-hidden="true" tabindex="-1"></a>hr_data <span class="ot">&lt;-</span> <span class="fu">read_all</span>(<span class="st">"HR.csv.gz"</span>) <span class="sc">|&gt;</span></span>
+<span id="cb62-2"><a href="#cb62-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">get_participant_id</span>() <span class="sc">|&gt;</span></span>
+<span id="cb62-3"><a href="#cb62-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">summarise_by_datetime</span>()</span>
+<span id="cb62-4"><a href="#cb62-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb62-5"><a href="#cb62-5" aria-hidden="true" tabindex="-1"></a>ibi_data <span class="ot">&lt;-</span> <span class="fu">read_all</span>(<span class="st">"IBI.csv.gz"</span>) <span class="sc">|&gt;</span></span>
+<span id="cb62-6"><a href="#cb62-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">get_participant_id</span>() <span class="sc">|&gt;</span></span>
+<span id="cb62-7"><a href="#cb62-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">summarise_by_datetime</span>()</span>
+<span id="cb62-8"><a href="#cb62-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb62-9"><a href="#cb62-9" aria-hidden="true" tabindex="-1"></a>temp_data <span class="ot">&lt;-</span> <span class="fu">read_all</span>(<span class="st">"TEMP.csv.gz"</span>) <span class="sc">|&gt;</span></span>
+<span id="cb62-10"><a href="#cb62-10" aria-hidden="true" tabindex="-1"></a>  <span class="fu">get_participant_id</span>() <span class="sc">|&gt;</span></span>
+<span id="cb62-11"><a href="#cb62-11" aria-hidden="true" tabindex="-1"></a>  <span class="fu">summarise_by_datetime</span>()</span>
+<span id="cb62-12"><a href="#cb62-12" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb62-13"><a href="#cb62-13" aria-hidden="true" tabindex="-1"></a>bvp_data <span class="ot">&lt;-</span> <span class="fu">read_all</span>(<span class="st">"BVP.csv.gz"</span>) <span class="sc">|&gt;</span></span>
+<span id="cb62-14"><a href="#cb62-14" aria-hidden="true" tabindex="-1"></a>  <span class="fu">get_participant_id</span>() <span class="sc">|&gt;</span></span>
+<span id="cb62-15"><a href="#cb62-15" aria-hidden="true" tabindex="-1"></a>  <span class="fu">summarise_by_datetime</span>()</span>
+<span id="cb62-16"><a href="#cb62-16" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb62-17"><a href="#cb62-17" aria-hidden="true" tabindex="-1"></a>eda_data <span class="ot">&lt;-</span> <span class="fu">read_all</span>(<span class="st">"EDA.csv.gz"</span>) <span class="sc">|&gt;</span></span>
+<span id="cb62-18"><a href="#cb62-18" aria-hidden="true" tabindex="-1"></a>  <span class="fu">get_participant_id</span>() <span class="sc">|&gt;</span></span>
+<span id="cb62-19"><a href="#cb62-19" aria-hidden="true" tabindex="-1"></a>  <span class="fu">summarise_by_datetime</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb63"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb63-1"><a href="#cb63-1" aria-hidden="true" tabindex="-1"></a>survey_tidy <span class="ot">&lt;-</span> here<span class="sc">::</span><span class="fu">here</span>(<span class="st">"data-raw/nurses-stress/survey-results.csv.gz"</span>) <span class="sc">|&gt;</span></span>
+<span id="cb63-2"><a href="#cb63-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">read</span>() <span class="sc">|&gt;</span></span>
+<span id="cb63-3"><a href="#cb63-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">tidy_survey_dates</span>()</span>
+<span id="cb63-4"><a href="#cb63-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb63-5"><a href="#cb63-5" aria-hidden="true" tabindex="-1"></a>survey_long <span class="ot">&lt;-</span> survey_tidy <span class="sc">|&gt;</span></span>
+<span id="cb63-6"><a href="#cb63-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">survey_to_long</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb64"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb64-1"><a href="#cb64-1" aria-hidden="true" tabindex="-1"></a>survey_long <span class="sc">%&gt;%</span> </span>
+<span id="cb64-2"><a href="#cb64-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">left_join</span>(survey_tidy)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stderr">
+<pre><code>Joining with `by = join_by(id, datetime_id)`</code></pre>
+</div>
+<div class="cell-output cell-output-stderr">
+<pre><code>Warning in left_join(., survey_tidy): Detected an unexpected many-to-many relationship between `x` and `y`.
+ℹ Row 852 of `x` matches multiple rows in `y`.
+ℹ Row 2 of `y` matches multiple rows in `x`.
+ℹ If a many-to-many relationship is expected, set `relationship =
+  "many-to-many"` to silence this warning.</code></pre>
+</div>
+<div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 3,161 × 5
+   id    datetime_id         collection_datetime start_datetime     
+   &lt;chr&gt; &lt;dttm&gt;              &lt;dttm&gt;              &lt;dttm&gt;             
+ 1 5C    2020-04-14 17:31:00 2020-04-14 17:31:00 2020-04-14 17:31:00
+ 2 5C    2020-04-14 17:31:00 2020-04-14 17:32:00 2020-04-14 17:31:00
+ 3 5C    2020-04-14 17:31:00 2020-04-14 17:33:00 2020-04-14 17:31:00
+ 4 5C    2020-04-14 17:31:00 2020-04-14 17:34:00 2020-04-14 17:31:00
+ 5 5C    2020-04-14 17:31:00 2020-04-14 17:35:00 2020-04-14 17:31:00
+ 6 5C    2020-04-14 17:31:00 2020-04-14 17:36:00 2020-04-14 17:31:00
+ 7 5C    2020-04-14 17:31:00 2020-04-14 17:37:00 2020-04-14 17:31:00
+ 8 5C    2020-04-14 17:31:00 2020-04-14 17:38:00 2020-04-14 17:31:00
+ 9 5C    2020-04-14 17:31:00 2020-04-14 17:39:00 2020-04-14 17:31:00
+10 5C    2020-04-14 17:31:00 2020-04-14 17:40:00 2020-04-14 17:31:00
+# ℹ 3,151 more rows
+# ℹ 1 more variable: end_datetime &lt;dttm&gt;</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb68"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb68-1"><a href="#cb68-1" aria-hidden="true" tabindex="-1"></a>survey_tidy <span class="sc">%&gt;%</span> </span>
+<span id="cb68-2"><a href="#cb68-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">count</span>(id,datetime_id) <span class="sc">%&gt;%</span> </span>
+<span id="cb68-3"><a href="#cb68-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(n<span class="sc">&gt;</span><span class="dv">1</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 2 × 3
+  id    datetime_id             n
+  &lt;chr&gt; &lt;dttm&gt;              &lt;int&gt;
+1 6B    2020-05-08 17:01:00     2
+2 7A    2020-06-23 13:40:00     2</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb70"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb70-1"><a href="#cb70-1" aria-hidden="true" tabindex="-1"></a>survey_long <span class="sc">%&gt;%</span> </span>
+<span id="cb70-2"><a href="#cb70-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">right_join</span>(survey_tidy)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stderr">
+<pre><code>Joining with `by = join_by(id, datetime_id)`</code></pre>
+</div>
+<div class="cell-output cell-output-stderr">
+<pre><code>Warning in right_join(., survey_tidy): Detected an unexpected many-to-many relationship between `x` and `y`.
+ℹ Row 852 of `x` matches multiple rows in `y`.
+ℹ Row 2 of `y` matches multiple rows in `x`.
+ℹ If a many-to-many relationship is expected, set `relationship =
+  "many-to-many"` to silence this warning.</code></pre>
+</div>
+<div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 3,161 × 5
+   id    datetime_id         collection_datetime start_datetime     
+   &lt;chr&gt; &lt;dttm&gt;              &lt;dttm&gt;              &lt;dttm&gt;             
+ 1 5C    2020-04-14 17:31:00 2020-04-14 17:31:00 2020-04-14 17:31:00
+ 2 5C    2020-04-14 17:31:00 2020-04-14 17:32:00 2020-04-14 17:31:00
+ 3 5C    2020-04-14 17:31:00 2020-04-14 17:33:00 2020-04-14 17:31:00
+ 4 5C    2020-04-14 17:31:00 2020-04-14 17:34:00 2020-04-14 17:31:00
+ 5 5C    2020-04-14 17:31:00 2020-04-14 17:35:00 2020-04-14 17:31:00
+ 6 5C    2020-04-14 17:31:00 2020-04-14 17:36:00 2020-04-14 17:31:00
+ 7 5C    2020-04-14 17:31:00 2020-04-14 17:37:00 2020-04-14 17:31:00
+ 8 5C    2020-04-14 17:31:00 2020-04-14 17:38:00 2020-04-14 17:31:00
+ 9 5C    2020-04-14 17:31:00 2020-04-14 17:39:00 2020-04-14 17:31:00
+10 5C    2020-04-14 17:31:00 2020-04-14 17:40:00 2020-04-14 17:31:00
+# ℹ 3,151 more rows
+# ℹ 1 more variable: end_datetime &lt;dttm&gt;</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb74"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb74-1"><a href="#cb74-1" aria-hidden="true" tabindex="-1"></a>survey_long <span class="sc">%&gt;%</span> </span>
+<span id="cb74-2"><a href="#cb74-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">full_join</span>(survey_tidy)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stderr">
+<pre><code>Joining with `by = join_by(id, datetime_id)`</code></pre>
+</div>
+<div class="cell-output cell-output-stderr">
+<pre><code>Warning in full_join(., survey_tidy): Detected an unexpected many-to-many relationship between `x` and `y`.
+ℹ Row 852 of `x` matches multiple rows in `y`.
+ℹ Row 2 of `y` matches multiple rows in `x`.
+ℹ If a many-to-many relationship is expected, set `relationship =
+  "many-to-many"` to silence this warning.</code></pre>
+</div>
+<div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 3,161 × 5
+   id    datetime_id         collection_datetime start_datetime     
+   &lt;chr&gt; &lt;dttm&gt;              &lt;dttm&gt;              &lt;dttm&gt;             
+ 1 5C    2020-04-14 17:31:00 2020-04-14 17:31:00 2020-04-14 17:31:00
+ 2 5C    2020-04-14 17:31:00 2020-04-14 17:32:00 2020-04-14 17:31:00
+ 3 5C    2020-04-14 17:31:00 2020-04-14 17:33:00 2020-04-14 17:31:00
+ 4 5C    2020-04-14 17:31:00 2020-04-14 17:34:00 2020-04-14 17:31:00
+ 5 5C    2020-04-14 17:31:00 2020-04-14 17:35:00 2020-04-14 17:31:00
+ 6 5C    2020-04-14 17:31:00 2020-04-14 17:36:00 2020-04-14 17:31:00
+ 7 5C    2020-04-14 17:31:00 2020-04-14 17:37:00 2020-04-14 17:31:00
+ 8 5C    2020-04-14 17:31:00 2020-04-14 17:38:00 2020-04-14 17:31:00
+ 9 5C    2020-04-14 17:31:00 2020-04-14 17:39:00 2020-04-14 17:31:00
+10 5C    2020-04-14 17:31:00 2020-04-14 17:40:00 2020-04-14 17:31:00
+# ℹ 3,151 more rows
+# ℹ 1 more variable: end_datetime &lt;dttm&gt;</code></pre>
+</div>
+</div>
+<p>## joining survey and center data(hr_data)</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb78"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb78-1"><a href="#cb78-1" aria-hidden="true" tabindex="-1"></a>nurses_stress <span class="ot">&lt;-</span> survey_long <span class="sc">%&gt;%</span> </span>
+<span id="cb78-2"><a href="#cb78-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">full_join</span>(survey_tidy) <span class="sc">%&gt;%</span> </span>
+<span id="cb78-3"><a href="#cb78-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">full_join</span>(hr_data)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stderr">
+<pre><code>Joining with `by = join_by(id, datetime_id)`</code></pre>
+</div>
+<div class="cell-output cell-output-stderr">
+<pre><code>Warning in full_join(., survey_tidy): Detected an unexpected many-to-many relationship between `x` and `y`.
+ℹ Row 852 of `x` matches multiple rows in `y`.
+ℹ Row 2 of `y` matches multiple rows in `x`.
+ℹ If a many-to-many relationship is expected, set `relationship =
+  "many-to-many"` to silence this warning.</code></pre>
+</div>
+<div class="cell-output cell-output-stderr">
+<pre><code>Joining with `by = join_by(id, collection_datetime)`</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb82"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb82-1"><a href="#cb82-1" aria-hidden="true" tabindex="-1"></a>nurses_stress <span class="sc">%&gt;%</span> </span>
+<span id="cb82-2"><a href="#cb82-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">arrange</span>(id, collection_datetime) <span class="sc">%&gt;%</span> </span>
+<span id="cb82-3"><a href="#cb82-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">view</span>()</span>
+<span id="cb82-4"><a href="#cb82-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb82-5"><a href="#cb82-5" aria-hidden="true" tabindex="-1"></a>nurses_stress</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 15,707 × 10
+   id    datetime_id         collection_datetime start_datetime     
+   &lt;chr&gt; &lt;dttm&gt;              &lt;dttm&gt;              &lt;dttm&gt;             
+ 1 5C    2020-04-14 17:31:00 2020-04-14 17:31:00 2020-04-14 17:31:00
+ 2 5C    2020-04-14 17:31:00 2020-04-14 17:32:00 2020-04-14 17:31:00
+ 3 5C    2020-04-14 17:31:00 2020-04-14 17:33:00 2020-04-14 17:31:00
+ 4 5C    2020-04-14 17:31:00 2020-04-14 17:34:00 2020-04-14 17:31:00
+ 5 5C    2020-04-14 17:31:00 2020-04-14 17:35:00 2020-04-14 17:31:00
+ 6 5C    2020-04-14 17:31:00 2020-04-14 17:36:00 2020-04-14 17:31:00
+ 7 5C    2020-04-14 17:31:00 2020-04-14 17:37:00 2020-04-14 17:31:00
+ 8 5C    2020-04-14 17:31:00 2020-04-14 17:38:00 2020-04-14 17:31:00
+ 9 5C    2020-04-14 17:31:00 2020-04-14 17:39:00 2020-04-14 17:31:00
+10 5C    2020-04-14 17:31:00 2020-04-14 17:40:00 2020-04-14 17:31:00
+# ℹ 15,697 more rows
+# ℹ 6 more variables: end_datetime &lt;dttm&gt;, hr_standardeviation &lt;dbl&gt;,
+#   hr_mean &lt;dbl&gt;, hr_median &lt;dbl&gt;, hr_min &lt;dbl&gt;, hr_max &lt;dbl&gt;</code></pre>
+</div>
+</div>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb84"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb84-1"><a href="#cb84-1" aria-hidden="true" tabindex="-1"></a>nurses_stress <span class="ot">&lt;-</span> survey_long <span class="sc">%&gt;%</span></span>
+<span id="cb84-2"><a href="#cb84-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">full_join</span>(survey_tidy) <span class="sc">%&gt;%</span></span>
+<span id="cb84-3"><a href="#cb84-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">full_join</span>(hr_data) <span class="sc">%&gt;%</span></span>
+<span id="cb84-4"><a href="#cb84-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">full_join</span>(ibi_data) <span class="sc">%&gt;%</span></span>
+<span id="cb84-5"><a href="#cb84-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">full_join</span>(temp_data) <span class="sc">%&gt;%</span></span>
+<span id="cb84-6"><a href="#cb84-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">full_join</span>(bvp_data) <span class="sc">%&gt;%</span></span>
+<span id="cb84-7"><a href="#cb84-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">full_join</span>(eda_data)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stderr">
+<pre><code>Joining with `by = join_by(id, datetime_id)`</code></pre>
+</div>
+<div class="cell-output cell-output-stderr">
+<pre><code>Warning in full_join(., survey_tidy): Detected an unexpected many-to-many relationship between `x` and `y`.
+ℹ Row 852 of `x` matches multiple rows in `y`.
+ℹ Row 2 of `y` matches multiple rows in `x`.
+ℹ If a many-to-many relationship is expected, set `relationship =
+  "many-to-many"` to silence this warning.</code></pre>
+</div>
+<div class="cell-output cell-output-stderr">
+<pre><code>Joining with `by = join_by(id, collection_datetime)`
+Joining with `by = join_by(id, collection_datetime)`
+Joining with `by = join_by(id, collection_datetime)`
+Joining with `by = join_by(id, collection_datetime)`
+Joining with `by = join_by(id, collection_datetime)`</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb88"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb88-1"><a href="#cb88-1" aria-hidden="true" tabindex="-1"></a>nurses_stress <span class="sc">%&gt;%</span></span>
+<span id="cb88-2"><a href="#cb88-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">arrange</span>(id, collection_datetime)  </span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 30,577 × 30
+   id    datetime_id collection_datetime start_datetime
+   &lt;chr&gt; &lt;dttm&gt;      &lt;dttm&gt;              &lt;dttm&gt;        
+ 1 15    NA          2020-07-07 16:43:00 NA            
+ 2 15    NA          2020-07-07 16:44:00 NA            
+ 3 15    NA          2020-07-07 16:45:00 NA            
+ 4 15    NA          2020-07-07 16:46:00 NA            
+ 5 15    NA          2020-07-07 16:47:00 NA            
+ 6 15    NA          2020-07-07 16:48:00 NA            
+ 7 15    NA          2020-07-07 16:49:00 NA            
+ 8 15    NA          2020-07-07 16:50:00 NA            
+ 9 15    NA          2020-07-07 16:51:00 NA            
+10 15    NA          2020-07-07 16:52:00 NA            
+# ℹ 30,567 more rows
+# ℹ 26 more variables: end_datetime &lt;dttm&gt;, hr_standardeviation &lt;dbl&gt;,
+#   hr_mean &lt;dbl&gt;, hr_median &lt;dbl&gt;, hr_min &lt;dbl&gt;, hr_max &lt;dbl&gt;,
+#   ibi_standardeviation &lt;dbl&gt;, ibi_mean &lt;dbl&gt;, ibi_median &lt;dbl&gt;,
+#   ibi_min &lt;dbl&gt;, ibi_max &lt;dbl&gt;, temp_standardeviation &lt;dbl&gt;, temp_mean &lt;dbl&gt;,
+#   temp_median &lt;dbl&gt;, temp_min &lt;dbl&gt;, temp_max &lt;dbl&gt;,
+#   bvp_standardeviation &lt;dbl&gt;, bvp_mean &lt;dbl&gt;, bvp_median &lt;dbl&gt;, …</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb90"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb90-1"><a href="#cb90-1" aria-hidden="true" tabindex="-1"></a>  nurses_stress</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 30,577 × 30
+   id    datetime_id         collection_datetime start_datetime     
+   &lt;chr&gt; &lt;dttm&gt;              &lt;dttm&gt;              &lt;dttm&gt;             
+ 1 5C    2020-04-14 17:31:00 2020-04-14 17:31:00 2020-04-14 17:31:00
+ 2 5C    2020-04-14 17:31:00 2020-04-14 17:32:00 2020-04-14 17:31:00
+ 3 5C    2020-04-14 17:31:00 2020-04-14 17:33:00 2020-04-14 17:31:00
+ 4 5C    2020-04-14 17:31:00 2020-04-14 17:34:00 2020-04-14 17:31:00
+ 5 5C    2020-04-14 17:31:00 2020-04-14 17:35:00 2020-04-14 17:31:00
+ 6 5C    2020-04-14 17:31:00 2020-04-14 17:36:00 2020-04-14 17:31:00
+ 7 5C    2020-04-14 17:31:00 2020-04-14 17:37:00 2020-04-14 17:31:00
+ 8 5C    2020-04-14 17:31:00 2020-04-14 17:38:00 2020-04-14 17:31:00
+ 9 5C    2020-04-14 17:31:00 2020-04-14 17:39:00 2020-04-14 17:31:00
+10 5C    2020-04-14 17:31:00 2020-04-14 17:40:00 2020-04-14 17:31:00
+# ℹ 30,567 more rows
+# ℹ 26 more variables: end_datetime &lt;dttm&gt;, hr_standardeviation &lt;dbl&gt;,
+#   hr_mean &lt;dbl&gt;, hr_median &lt;dbl&gt;, hr_min &lt;dbl&gt;, hr_max &lt;dbl&gt;,
+#   ibi_standardeviation &lt;dbl&gt;, ibi_mean &lt;dbl&gt;, ibi_median &lt;dbl&gt;,
+#   ibi_min &lt;dbl&gt;, ibi_max &lt;dbl&gt;, temp_standardeviation &lt;dbl&gt;, temp_mean &lt;dbl&gt;,
+#   temp_median &lt;dbl&gt;, temp_min &lt;dbl&gt;, temp_max &lt;dbl&gt;,
+#   bvp_standardeviation &lt;dbl&gt;, bvp_mean &lt;dbl&gt;, bvp_median &lt;dbl&gt;, …</code></pre>
+</div>
+</div>
+<p>```</p>
 </section>
 </section>
 

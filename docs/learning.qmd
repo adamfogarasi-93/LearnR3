@@ -316,6 +316,37 @@ survey_tidy <- survey_data %>%
 ```
 
 ```{r}
+hr_data <- read_all("HR.csv.gz") |>
+  get_participant_id() |>
+  summarise_by_datetime()
+
+ibi_data <- read_all("IBI.csv.gz") |>
+  get_participant_id() |>
+  summarise_by_datetime()
+
+temp_data <- read_all("TEMP.csv.gz") |>
+  get_participant_id() |>
+  summarise_by_datetime()
+
+bvp_data <- read_all("BVP.csv.gz") |>
+  get_participant_id() |>
+  summarise_by_datetime()
+
+eda_data <- read_all("EDA.csv.gz") |>
+  get_participant_id() |>
+  summarise_by_datetime()
+```
+
+```{r}
+survey_tidy <- here::here("data-raw/nurses-stress/survey-results.csv.gz") |>
+  read() |>
+  tidy_survey_dates()
+
+survey_long <- survey_tidy |>
+  survey_to_long()
+```
+
+```{r}
 survey_long %>% 
   left_join(survey_tidy)
 
@@ -342,4 +373,19 @@ nurses_stress %>%
 
 nurses_stress
 ```
- 
+```{r}
+nurses_stress <- survey_long %>%
+  full_join(survey_tidy) %>%
+  full_join(hr_data) %>%
+  full_join(ibi_data) %>%
+  full_join(temp_data) %>%
+  full_join(bvp_data) %>%
+  full_join(eda_data)
+
+nurses_stress %>%
+  arrange(id, collection_datetime)  
+
+  nurses_stress
+```
+```
+  
