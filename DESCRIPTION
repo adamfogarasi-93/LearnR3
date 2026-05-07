@@ -11,7 +11,8 @@ Imports:
     purrr,
     readr,
     snakecase,
-    stringr
+    stringr,
+    tidyr
 Depends: 
     tidyverse
 URL: https://github.com/adamfogarasi-93/LearnR3
