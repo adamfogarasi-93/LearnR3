@@ -81,8 +81,9 @@ tidy_survey_dates <- function(data){
            end_datetime = as_datetime(paste(date, end_time)),
            datetime_id = start_datetime,
            .before =start_time) %>%
-    select(id, datetime_id,start_datetime,end_datetime)}
+    select(id, datetime_id,start_datetime,end_datetime)
     return(tidied)
+  }
 
 ## pivoting long
 survey_to_long <- function(data) {

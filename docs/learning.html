@@ -717,13 +717,41 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <section id="pivoted-data-made-into-function" class="level2">
 <h2 class="anchored" data-anchor-id="pivoted-data-made-into-function">pivoted data made into function</h2>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb59"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb59-1"><a href="#cb59-1" aria-hidden="true" tabindex="-1"></a>survey_tidy <span class="ot">&lt;-</span> <span class="cf">function</span>(data){</span>
-<span id="cb59-2"><a href="#cb59-2" aria-hidden="true" tabindex="-1"></a>  pivoteddata <span class="ot">&lt;-</span> data <span class="sc">%&gt;%</span> </span>
-<span id="cb59-3"><a href="#cb59-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">select</span>(id, datetime_id,start_datetime,end_datetime) <span class="sc">%&gt;%</span> </span>
-<span id="cb59-4"><a href="#cb59-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">pivot_longer</span>(<span class="fu">c</span>(start_datetime, end_datetime), <span class="at">names_to =</span><span class="cn">NULL</span>, <span class="at">values_to =</span><span class="st">"collection_datetime"</span>) <span class="sc">%&gt;%</span> </span>
-<span id="cb59-5"><a href="#cb59-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">group_by</span>(<span class="fu">pick</span>(<span class="sc">-</span>collection_datetime)) <span class="sc">%&gt;%</span> </span>
-<span id="cb59-6"><a href="#cb59-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">complete</span>(<span class="at">collection_datetime =</span> <span class="fu">seq</span>(<span class="fu">min</span>(collection_datetime),<span class="fu">max</span>(collection_datetime), <span class="at">by =</span> <span class="dv">60</span>)) <span class="sc">%&gt;%</span> </span>
-<span id="cb59-7"><a href="#cb59-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ungroup</span>()} </span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb59"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb59-1"><a href="#cb59-1" aria-hidden="true" tabindex="-1"></a>tidy_survey_dates <span class="ot">&lt;-</span> <span class="cf">function</span>(data){</span>
+<span id="cb59-2"><a href="#cb59-2" aria-hidden="true" tabindex="-1"></a>  tidied <span class="ot">&lt;-</span> data <span class="sc">%&gt;%</span> </span>
+<span id="cb59-3"><a href="#cb59-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">date =</span> <span class="fu">mdy</span>(date),</span>
+<span id="cb59-4"><a href="#cb59-4" aria-hidden="true" tabindex="-1"></a>         <span class="at">start_datetime=</span><span class="fu">as_datetime</span>(<span class="fu">paste</span>(date, start_time)),</span>
+<span id="cb59-5"><a href="#cb59-5" aria-hidden="true" tabindex="-1"></a>         <span class="at">end_datetime =</span> <span class="fu">as_datetime</span>(<span class="fu">paste</span>(date, end_time)),</span>
+<span id="cb59-6"><a href="#cb59-6" aria-hidden="true" tabindex="-1"></a>         <span class="at">datetime_id =</span> start_datetime,</span>
+<span id="cb59-7"><a href="#cb59-7" aria-hidden="true" tabindex="-1"></a>         <span class="at">.before =</span>start_time) <span class="sc">%&gt;%</span> </span>
+<span id="cb59-8"><a href="#cb59-8" aria-hidden="true" tabindex="-1"></a>  <span class="fu">select</span>(id, datetime_id,start_datetime,end_datetime)}</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>##pivoted data made into function survey_to_long</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb60"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb60-1"><a href="#cb60-1" aria-hidden="true" tabindex="-1"></a>survey_to_long <span class="ot">&lt;-</span> <span class="cf">function</span>(data) {</span>
+<span id="cb60-2"><a href="#cb60-2" aria-hidden="true" tabindex="-1"></a>  longer <span class="ot">&lt;-</span> data <span class="sc">|&gt;</span></span>
+<span id="cb60-3"><a href="#cb60-3" aria-hidden="true" tabindex="-1"></a>    dplyr<span class="sc">::</span><span class="fu">select</span>(id, datetime_id, start_datetime, end_datetime) <span class="sc">|&gt;</span></span>
+<span id="cb60-4"><a href="#cb60-4" aria-hidden="true" tabindex="-1"></a>    tidyr<span class="sc">::</span><span class="fu">pivot_longer</span>(</span>
+<span id="cb60-5"><a href="#cb60-5" aria-hidden="true" tabindex="-1"></a>      <span class="fu">c</span>(start_datetime, end_datetime),</span>
+<span id="cb60-6"><a href="#cb60-6" aria-hidden="true" tabindex="-1"></a>      <span class="at">names_to =</span> <span class="cn">NULL</span>,</span>
+<span id="cb60-7"><a href="#cb60-7" aria-hidden="true" tabindex="-1"></a>      <span class="at">values_to =</span> <span class="st">"collection_datetime"</span></span>
+<span id="cb60-8"><a href="#cb60-8" aria-hidden="true" tabindex="-1"></a>    ) <span class="sc">|&gt;</span></span>
+<span id="cb60-9"><a href="#cb60-9" aria-hidden="true" tabindex="-1"></a>    dplyr<span class="sc">::</span><span class="fu">group_by</span>(dplyr<span class="sc">::</span><span class="fu">pick</span>(<span class="sc">-</span>collection_datetime)) <span class="sc">|&gt;</span></span>
+<span id="cb60-10"><a href="#cb60-10" aria-hidden="true" tabindex="-1"></a>    tidyr<span class="sc">::</span><span class="fu">complete</span>(</span>
+<span id="cb60-11"><a href="#cb60-11" aria-hidden="true" tabindex="-1"></a>      <span class="at">collection_datetime =</span> <span class="fu">seq</span>(</span>
+<span id="cb60-12"><a href="#cb60-12" aria-hidden="true" tabindex="-1"></a>        <span class="fu">min</span>(collection_datetime),</span>
+<span id="cb60-13"><a href="#cb60-13" aria-hidden="true" tabindex="-1"></a>        <span class="fu">max</span>(collection_datetime),</span>
+<span id="cb60-14"><a href="#cb60-14" aria-hidden="true" tabindex="-1"></a>        <span class="at">by =</span> <span class="dv">60</span></span>
+<span id="cb60-15"><a href="#cb60-15" aria-hidden="true" tabindex="-1"></a>      )</span>
+<span id="cb60-16"><a href="#cb60-16" aria-hidden="true" tabindex="-1"></a>    ) <span class="sc">|&gt;</span></span>
+<span id="cb60-17"><a href="#cb60-17" aria-hidden="true" tabindex="-1"></a>    dplyr<span class="sc">::</span><span class="fu">ungroup</span>()</span>
+<span id="cb60-18"><a href="#cb60-18" aria-hidden="true" tabindex="-1"></a>  <span class="fu">return</span>(longer)</span>
+<span id="cb60-19"><a href="#cb60-19" aria-hidden="true" tabindex="-1"></a>}</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb61"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb61-1"><a href="#cb61-1" aria-hidden="true" tabindex="-1"></a>survey_tidy <span class="ot">&lt;-</span> survey_data <span class="sc">%&gt;%</span> </span>
+<span id="cb61-2"><a href="#cb61-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">tidy_survey_dates</span>() <span class="sc">%&gt;%</span> </span>
+<span id="cb61-3"><a href="#cb61-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">survey_to_long</span>() </span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 </section>
 </section>
